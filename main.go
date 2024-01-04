@@ -1,5 +1,12 @@
 package main
 
+// Notes how to rum update and delete
+// curl -i -X PUT -H "Content-Type: application/json" -d "{ \"id\": \"1\", \"title\": \"The Hitchhiker's Guide to the Galaxy\", \"author\": \"Douglas Adams\", \"quality\": \"Good\" }" http://localhost:8080/books/1
+// curl -i -X DELETE http://localhost:8080/books/1
+// or
+//  Invoke-RestMethod -Uri http://localhost:8080/books/1 -Method Put -Body '{"title":"Updated Title", "author":"Updated Author", "quality":"Updated Quality"}' -ContentType "application/json"
+//  Invoke-RestMethod -Uri http://localhost:8080/books/1 -Method Delete
+
 import (
 	"net/http"
 	"github.com/gin-gonic/gin"
@@ -36,13 +43,13 @@ func createBook(c *gin.Context) {
 
 }
 
-func getBookByID(id string)(*book, error) {
-	for _, a := range books {
-		if a.ID == id {
-			return &a, nil
-		}
-	}
-	return nil, errors.New("Book not found")
+func getBookByID(id string) (*book, error) {
+    for i := range books {
+        if books[i].ID == id {
+            return &books[i], nil
+        }
+    }
+    return nil, errors.New("Book not found")
 }
 
 func getBookByIDHandler(c *gin.Context) {
@@ -98,7 +105,7 @@ func deleteBook(c *gin.Context) {
 func main() {
 	router := gin.Default()
 	router.GET("/books", getBooks)
-	router.GET("/books/:id", getBookByID)
+	router.GET("/books/:id", getBookByIDHandler)
 	router.POST("/books", createBook)
 	router.PUT("/books/:id", updateBook)
 	router.DELETE("/books/:id", deleteBook)
